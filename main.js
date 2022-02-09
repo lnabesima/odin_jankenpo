@@ -1,94 +1,90 @@
-const shapes = ["Rock", "Paper", "Scissors"];
-const playerShape = function(){
-    let shape = window.prompt("Jan Ken Po!").toLowerCase();
-    console.log(shape);
-    return shape;
+const shapes = ['rock', 'paper', 'scissors'];
+const buttons = document.querySelectorAll('.btn');
+let playerScore = 0;
+let computerScore = 0;
+let result = "";
+
+//this function selects randomly one shape from the array of shapes to be the computer's choice
+function computerPlay() {
+    return shapes[Math.floor(Math.random() * shapes.length)];
 }
 
-const computerPlay = function() {
-    const randomComputer = Math.floor(Math.random() * shapes.length);
-    console.log(shapes[randomComputer]);
-    return shapes[randomComputer];
-}
-
-// function janKen(playerShape, computerPlay){
-//     switch(playerShape, computerPlay){
-//         case "rock" && "Rock":
-//             console.log(`It's a tie! Both of you played ${computerPlay.toLowerCase()}.`);
-//             break;
-//         case "rock" && "Paper":
-//             console.log(`You lost! You played ${playerShape}. The computer played ${computerPlay.toLowerCase()}. Paper beats Rock!`);
-//             break;
-//         case "rock" && "Scissors":
-//             console.log(`You win! You played ${playerShape}. The computer played ${computerPlay.toLowerCase()}. Rock beats Scissors!`);
-//             break;
-//         case "paper" && "Rock":
-//             console.log(`You win! You played ${playerShape}. The computer played ${computerPlay.toLowerCase()}. Paper beats Rock!`);
-//             break;
-//         case "paper" && "Paper": 
-//             console.log(`It's a tie! Both of you played ${computerPlay.toLowerCase()}.`);
-//             break;
-//         case "paper" && "Scissors":
-//             console.log(`You lost! You played ${playerShape}. The computer played ${computerPlay.toLowerCase()}. Scissors beats Paper!`);
-//             break;
-//         case "scissors" && "Rock":
-//             console.log(`You lost! You played ${playerShape}. The computer played ${computerPlay.toLowerCase()}. Rock beats Scissors!`);
-//             break;
-//         case "scissors" && "Paper":
-//             console.log(`You win! You played ${playerShape}. The computer played ${computerPlay.toLowerCase()}. Scissors beats Paper!`);
-//             break;
-//         case "scissors" && "Scissors":
-//             console.log(`It's a tie! Both of you played ${computerPlay.toLowerCase()}.`);
-//             break;
-//     }
-// }
-
-
-function janKen(playerShape, computerPlay){
-    if(playerShape == 'rock'){
-        switch(computerPlay){
-            case 'Rock':
-                console.log(`It's a tie! Both of you played ${computerPlay.toLowerCase()}.`);
+function playRound(playerShape){
+    let computerSelection = computerPlay();
+    if(playerShape === shapes[0]){
+        switch(computerSelection){
+            case shapes[0]:
+                result = `It's a tie! Both of you played ${computerSelection}.`;
                 break;
-            case 'Paper':
-                console.log(`You lost! You played ${playerShape} and the computer played ${computerPlay.toLowerCase()}. Paper beats Rock!`);
+            case shapes[1]:
+                result = `You lost! You played ${playerShape} and the computer played ${computerSelection}. Paper beats Rock!`;
+                computerScore++;
                 break;
-            case 'Scissors':
-                console.log(`You won! You played ${playerShape} and the computer played ${computerPlay.toLowerCase()}. Rock beats Scissors!`);
+            case shapes[2]:
+                result = `You won! You played ${playerShape} and the computer played ${computerSelection}. Rock beats Scissors!`;
+                playerScore++;
                 break;
         }
-    } else if(playerShape == 'paper'){
-        switch(computerPlay){
-            case 'Rock':
-                console.log(`You won! You played ${playerShape} and the computer played ${computerPlay.toLowerCase()}. Paper beats Rock!`);
+    } else if(playerShape === shapes[1]){
+        switch(computerSelection){
+            case shapes[0]:
+                result = `You won! You played ${playerShape} and the computer played ${computerSelection}. Paper beats Rock!`;
+                playerScore++;
                 break;
-            case 'Paper':
-                console.log(`It's a tie! Both of you played ${computerPlay.toLowerCase()}.`);
+            case shapes[1]:
+                result = `It's a tie! Both of you played ${computerSelection}.`;
                 break;
-            case 'Scissors': 
-                console.log(`You lost! You played ${playerShape} and the computer played ${computerPlay.toLowerCase()}. Scissors beats Paper!`);
+            case shapes[2]:
+                result = `You lost! You played ${playerShape} and the computer played ${computerSelection}. Scissors beats Paper!`;
+                computerScore++;
                 break;
         }
-    } else if(playerShape == 'scissors'){
-        switch(computerPlay){
-            case 'Rock':
-                console.log(`You lost! You played ${playerShape} and the computer played ${computerPlay.toLowerCase()}. Rock beats Scissors!`);
+    } else if(playerShape === shapes[2]){
+        switch(computerSelection){
+            case shapes[0]:
+                result = `You lost! You played ${playerShape} and the computer played ${computerSelection}. Rock beats Scissors!`;
+                computerScore++;
                 break;
-            case 'Paper':
-                console.log(`You won! You played ${playerShape} and the computer played ${computerPlay.toLowerCase()}. Scissors beats Paper!`);
+            case shapes[1]:
+                result = `You won! You played ${playerShape} and the computer played ${computerSelection}. Scissors beats Paper!`;
+                playerScore++;
                 break;
-            case 'Scissors': 
-                console.log(`It's a tie! Both of you played ${computerPlay.toLowerCase()}.`);
+            case shapes[2]:
+                result = `It's a tie! Both of you played ${computerSelection}.`;
                 break;
         }
     }
-}
 
-function playRound(){
-    alert(`Let's play some Jan Ken Po! Best of 5 rounds.`)
-    for(i = 1; i <= 5; i++){
-        janKen(playerShape(), computerPlay());
+    if(playerScore == 5){
+        document.getElementById('playerScore').innerHTML = `Player Score: ${playerScore}`;
+        document.getElementById('description').innerHTML = `CONGLATULATION! A winner is you!`;
+        disableButtons();
+    } else if(computerScore == 5){
+        document.getElementById('computerScore').innerHTML = `Computer Score: ${computerScore}`;
+        document.getElementById('description').innerHTML = `You lost!`;
+        disableButtons();
+    } else {
+        appendText();
+        updateScore();
     }
+
+};
+
+
+function appendText(){
+    document.getElementById('description').innerHTML = result;
+};
+
+function updateScore(){
+    document.getElementById('playerScore').innerHTML = `Player Score: ${playerScore}`;
+    document.getElementById('computerScore').innerHTML = `Computer Score: ${computerScore}`;
+};
+
+function disableButtons() {
+    buttons.forEach(button => button.disabled = true);
 }
 
-playRound();
+buttons.forEach(button => button.addEventListener('click', () => {
+    playRound(button.id);
+    // console.log(button.id);
+}));
